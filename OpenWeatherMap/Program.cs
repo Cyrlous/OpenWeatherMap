@@ -15,5 +15,6 @@ class Program
         
         OpenWeatherMapAPI.GetUSWeather(client, config);
         OpenWeatherMapAPI.GetWorldWeather(client, config);
+        OpenWeatherMapAPI.GetWeatherByCoordinates(client, config);
     }
 }
