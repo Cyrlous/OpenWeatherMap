@@ -13,8 +13,6 @@ class Program
             .AddEnvironmentVariables()
             .Build();
         
-        OpenWeatherMapAPI.GetUSWeather(client, config);
-        OpenWeatherMapAPI.GetWorldWeather(client, config);
-        OpenWeatherMapAPI.GetWeatherByCoordinates(client, config);
+        UserAccess.MainMenu(client, config);
     }
 }
