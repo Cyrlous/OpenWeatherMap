@@ -154,7 +154,7 @@ public class OpenWeatherMapAPI
 
         do
         {
-            Console.WriteLine("Please enter the latitude name: ");
+            Console.WriteLine("Please enter the latitude: ");
             Console.WriteLine("(Latitude must be a value between -90 and 90)");
             latitude = Console.ReadLine();
 
