@@ -58,7 +58,7 @@ public class OpenWeatherMapAPI
         //parse user input
         var json = JObject.Parse(weather);
         
-        //stor various data retrieved from weather API in order to display to console
+        //store various data retrieved from weather API in order to display to console
         var weatherMain = json.SelectToken("weather[0].description").ToString();
         var temp = json.SelectToken("main.temp").ToString();
         var feelsLike = json.SelectToken("main.feels_like").ToString();
