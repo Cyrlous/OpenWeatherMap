@@ -1,9 +1,16 @@
 ﻿namespace OpenWeatherMap;
+using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Configuration;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        var client = new HttpClient();
+
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .AddEnvironmentVariables()
+            .Build();
     }
 }
