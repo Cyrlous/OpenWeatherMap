@@ -14,7 +14,6 @@ public class OpenWeatherMapAPI
         //declare variables
         var city = "";
         var state = "";
-        var country = "us";
         var weather = "";
         bool validInput = false;
         
@@ -28,7 +27,7 @@ public class OpenWeatherMapAPI
             state = Console.ReadLine();
 
             var weatherAPI =
-                $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},{country}&appid=0f794640d6d7201d2ac496ca6ff3e06e&units=imperial";
+                $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},us&appid=0f794640d6d7201d2ac496ca6ff3e06e&units=imperial";
             var weatherData = client.GetAsync(weatherAPI).Result;
             
             //proceed with weather data display if user input is valid
@@ -55,27 +54,8 @@ public class OpenWeatherMapAPI
             }
         } while (!validInput);
         
-        //parse user input
-        var json = JObject.Parse(weather);
-        
-        //store various data retrieved from weather API in order to display to console
-        var weatherMain = json.SelectToken("weather[0].description").ToString();
-        var temp = json.SelectToken("main.temp").ToString();
-        var feelsLike = json.SelectToken("main.feels_like").ToString();
-        var humidity = json.SelectToken("main.humidity").ToString();
-        var windSpeed = json.SelectToken("wind.speed").ToString();
-        
-        //display data to console
-        Console.WriteLine($"\nWeather data for {city}, {state} is as follows:");
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine($"Weather: \t{weatherMain}\n");
-        Console.WriteLine($"Temperature: \t{temp}° F");
-        Console.WriteLine($"Feels Like: \t{feelsLike}° F");
-        Console.WriteLine($"Humidity: \t{humidity}%\n");
-        Console.WriteLine($"Wind Speed: \t{windSpeed} mph");
-        Console.WriteLine("------------------------------------------------\n");
-        Console.WriteLine($"Please press enter to continue...");
-        Console.ReadLine();
+        //call method to display weather data
+        DisplayWeatherData(weather, city, state);
     }
     
     //see GetUSWeather method for details on each section of code
@@ -121,25 +101,8 @@ public class OpenWeatherMapAPI
                 validInput = false;
             }
         } while (!validInput);
-
-        var json = JObject.Parse(weather);
         
-        var weatherMain = json.SelectToken("weather[0].description").ToString();
-        var temp = json.SelectToken("main.temp").ToString();
-        var feelsLike = json.SelectToken("main.feels_like").ToString();
-        var humidity = json.SelectToken("main.humidity").ToString();
-        var windSpeed = json.SelectToken("wind.speed").ToString();
-        
-        Console.WriteLine($"\nWeather data for {city}, {country} is as follows:");
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine($"Weather: \t{weatherMain}\n");
-        Console.WriteLine($"Temperature: \t{temp}° F");
-        Console.WriteLine($"Feels Like: \t{feelsLike}° F");
-        Console.WriteLine($"Humidity: \t{humidity}%\n");
-        Console.WriteLine($"Wind Speed: \t{windSpeed} mph");
-        Console.WriteLine("------------------------------------------------\n");
-        Console.WriteLine($"Please press enter to continue...");
-        Console.ReadLine();
+        DisplayWeatherData(weather, city, country);
     }
     
     //see GetUSWeather method for details on each section of code
@@ -187,6 +150,12 @@ public class OpenWeatherMapAPI
             }
         } while (!validInput);
 
+        DisplayWeatherData(weather, latitude, longitude);
+    }
+
+    //method to display weather data to console
+    public static void DisplayWeatherData(string weather, string input1, string input2)
+    {
         var json = JObject.Parse(weather);
         
         var weatherMain = json.SelectToken("weather[0].description").ToString();
@@ -195,7 +164,7 @@ public class OpenWeatherMapAPI
         var humidity = json.SelectToken("main.humidity").ToString();
         var windSpeed = json.SelectToken("wind.speed").ToString();
         
-        Console.WriteLine($"\nWeather data for latitude {latitude}, longitude {longitude} is as follows:");
+        Console.WriteLine($"\nWeather data for latitude {input1}, longitude {input2} is as follows:");
         Console.WriteLine("------------------------------------------------");
         Console.WriteLine($"Weather: \t{weatherMain}\n");
         Console.WriteLine($"Temperature: \t{temp}° F");
@@ -207,3 +176,4 @@ public class OpenWeatherMapAPI
         Console.ReadLine();
     }
 }
+
