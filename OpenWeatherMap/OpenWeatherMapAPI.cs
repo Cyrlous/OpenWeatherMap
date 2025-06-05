@@ -27,7 +27,7 @@ public class OpenWeatherMapAPI
             state = Console.ReadLine();
 
             var weatherAPI =
-                $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},us&appid=0f794640d6d7201d2ac496ca6ff3e06e&units=imperial";
+                $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},us&appid={apiKey}&units=imperial";
             var weatherData = client.GetAsync(weatherAPI).Result;
             
             //proceed with weather data display if user input is valid
@@ -78,7 +78,7 @@ public class OpenWeatherMapAPI
             country = Console.ReadLine();
 
             var weatherAPI =
-                $"https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid=0f794640d6d7201d2ac496ca6ff3e06e&units=imperial";
+                $"https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid={apiKey}&units=imperial";
             var weatherData = client.GetAsync(weatherAPI).Result;
 
             if (weatherData.IsSuccessStatusCode)
@@ -126,7 +126,7 @@ public class OpenWeatherMapAPI
             longitude = Console.ReadLine();
 
             var weatherAPI =
-                $"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid=0f794640d6d7201d2ac496ca6ff3e06e&units=imperial";
+                $"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={apiKey}&units=imperial";
             var weatherData = client.GetAsync(weatherAPI).Result;
 
             if (weatherData.IsSuccessStatusCode)
