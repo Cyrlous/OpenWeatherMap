@@ -4,7 +4,7 @@ namespace OpenWeatherMap;
 
 public class UserAccess
 {
-    public static void MainMenu(HttpClient client, IConfiguration config)
+    public static async Task MainMenu(HttpClient client, IConfiguration config)
     {
         var answer = "";
         Console.WriteLine("Welcome to Weather Finder.\n\n");
@@ -17,20 +17,20 @@ public class UserAccess
             Console.WriteLine("2. Get Weather Data By Global Coordinates");
             Console.WriteLine("3. Exit");
 
-            answer = Console.ReadLine();
+            answer = Console.ReadLine() ?? "";
 
             switch (answer)
             {
                 //runs the CitySubMenu method
                 case "1":
                 {
-                    CitySubMenu(client, config);
+                    await CitySubMenu(client, config);
                     break;
                 }
                 //runs the GetWeatherByCoordinates method from OpenWeatherMapAPI class
                 case "2":
                 {
-                    OpenWeatherMapAPI.GetWeatherByCoordinates(client, config);
+                    await OpenWeatherMapAPI.GetWeatherByCoordinates(client, config);
                     break;
                 }
                 //exits program
