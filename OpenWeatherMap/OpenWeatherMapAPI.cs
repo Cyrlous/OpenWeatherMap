@@ -21,10 +21,10 @@ public class OpenWeatherMapAPI
         do
         {
             Console.WriteLine("Please enter the city name: ");
-            city = Console.ReadLine();
+            city = Console.ReadLine() ?? "";
 
             Console.WriteLine("Please enter the two digit state code: ");
-            state = Console.ReadLine();
+            state = Console.ReadLine() ?? "";
 
             var weatherAPI =
                 $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},us&appid={apiKey}&units=imperial";
@@ -59,7 +59,7 @@ public class OpenWeatherMapAPI
     }
     
     //see GetUSWeather method for details on each section of code
-    public static void GetWorldWeather(HttpClient client, IConfiguration config)
+    public static async Task GetWorldWeather(HttpClient client, IConfiguration config)
     {
         string apiKey = config["ApiSettings:MyApiKey"];
 
@@ -71,19 +71,19 @@ public class OpenWeatherMapAPI
         do
         {
             Console.WriteLine("Please enter the city name: ");
-            city = Console.ReadLine();
+            city = Console.ReadLine() ?? "";
 
             Console.WriteLine("Please enter the two digit country code: ");
             Console.WriteLine("(Country codes may be found at https://countrycode.org/.  Use the two digit ISO code.)");
-            country = Console.ReadLine();
+            country = Console.ReadLine() ?? "";
 
             var weatherAPI =
                 $"https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid={apiKey}&units=imperial";
-            var weatherData = client.GetAsync(weatherAPI).Result;
+            var weatherData = await client.GetAsync(weatherAPI);
 
             if (weatherData.IsSuccessStatusCode)
             {
-                weather = weatherData.Content.ReadAsStringAsync().Result;
+                weather = await weatherData.Content.ReadAsStringAsync();
                 validInput = true;
             }
             else if (weatherData.StatusCode == HttpStatusCode.NotFound)
