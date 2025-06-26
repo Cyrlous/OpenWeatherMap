@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -113,6 +112,9 @@ public class OpenWeatherMapAPI
         var latitude = "";
         var longitude = "";
         var weather = "";
+        var loc1 = "latitude";
+        var loc2 = "longitude";
+            
         bool validInput = false;
 
         do
@@ -158,13 +160,13 @@ public class OpenWeatherMapAPI
     {
         var json = JObject.Parse(weather);
         
-        var weatherMain = json.SelectToken("weather[0].description").ToString();
-        var temp = json.SelectToken("main.temp").ToString();
-        var feelsLike = json.SelectToken("main.feels_like").ToString();
-        var humidity = json.SelectToken("main.humidity").ToString();
-        var windSpeed = json.SelectToken("wind.speed").ToString();
+        var weatherMain = json.SelectToken("weather[0].description")?.ToString() ?? "Unknown";
+        var temp = json.SelectToken("main.temp")?.ToString() ?? "Unknown";
+        var feelsLike = json.SelectToken("main.feels_like")?.ToString() ?? "Unknown";
+        var humidity = json.SelectToken("main.humidity")?.ToString() ?? "Unknown";
+        var windSpeed = json.SelectToken("wind.speed")?.ToString() ?? "Unknown";
         
-        Console.WriteLine($"\nWeather data for latitude {input1}, longitude {input2} is as follows:");
+        Console.WriteLine($"\nWeather data for {input1}, {input2} is as follows:");
         Console.WriteLine("------------------------------------------------");
         Console.WriteLine($"Weather: \t{weatherMain}\n");
         Console.WriteLine($"Temperature: \t{temp}° F");
@@ -176,4 +178,3 @@ public class OpenWeatherMapAPI
         Console.ReadLine();
     }
 }
-
