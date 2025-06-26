@@ -106,7 +106,7 @@ public class OpenWeatherMapAPI
     }
     
     //see GetUSWeather method for details on each section of code
-    public static void GetWeatherByCoordinates(HttpClient client, IConfiguration config)
+    public static async Task GetWeatherByCoordinates(HttpClient client, IConfiguration config)
     {
         string apiKey = config["ApiSettings:MyApiKey"];
 
@@ -119,19 +119,19 @@ public class OpenWeatherMapAPI
         {
             Console.WriteLine("Please enter the latitude: ");
             Console.WriteLine("(Latitude must be a value between -90 and 90)");
-            latitude = Console.ReadLine();
+            latitude = Console.ReadLine() ?? "";
 
             Console.WriteLine("Please enter the longitude: ");
             Console.WriteLine("(Longitude must be a value between -180 and 180)");
-            longitude = Console.ReadLine();
+            longitude = Console.ReadLine() ?? "";
 
             var weatherAPI =
                 $"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={apiKey}&units=imperial";
-            var weatherData = client.GetAsync(weatherAPI).Result;
+            var weatherData = await client.GetAsync(weatherAPI);
 
             if (weatherData.IsSuccessStatusCode)
             {
-                weather = weatherData.Content.ReadAsStringAsync().Result;
+                weather = await weatherData.Content.ReadAsStringAsync();
                 validInput = true;
             }
             else if (weatherData.StatusCode == HttpStatusCode.NotFound)
