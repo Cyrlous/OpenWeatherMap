@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         using var client = new HttpClient();
         
@@ -15,6 +15,6 @@ class Program
             .AddEnvironmentVariables()
             .Build();
         
-        UserAccess.MainMenu(client, config);
+        await UserAccess.MainMenu(client, config);
     }
 }
