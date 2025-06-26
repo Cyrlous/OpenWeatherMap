@@ -49,7 +49,7 @@ public class UserAccess
         } while (answer != "3");
     }
 
-    public static void CitySubMenu(HttpClient client, IConfiguration config)
+    public static async Task CitySubMenu(HttpClient client, IConfiguration config)
     {
         var answer = "";
         do
@@ -61,21 +61,21 @@ public class UserAccess
             Console.WriteLine("2. Select City outside of the United States");
             Console.WriteLine("3. Return to Main Menu");
             
-            answer = Console.ReadLine();
+            answer = Console.ReadLine() ?? "";
 
             switch(answer)
             {
                 //runs the GetUSWeather method from OpenWeatherMapAPI class
                 case "1":
                 {
-                    OpenWeatherMapAPI.GetUSWeather(client, config);
+                    await OpenWeatherMapAPI.GetUSWeather(client, config);
                     answer = "3";
                     break;
                 }
                 //runs the GetWorldWeather method from OpenWeatherMapAPI class
                 case "2":
                 {
-                    OpenWeatherMapAPI.GetWorldWeather(client, config);
+                    await OpenWeatherMapAPI.GetWorldWeather(client, config);
                     answer = "3";
                     break;
                 }
