@@ -6,7 +6,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        var client = new HttpClient();
+        using var client = new HttpClient();
+        
+        client.Timeout = TimeSpan.FromSeconds(30);
 
         var config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
