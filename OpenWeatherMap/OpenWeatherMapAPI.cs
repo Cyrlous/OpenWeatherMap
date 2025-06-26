@@ -6,7 +6,7 @@ namespace OpenWeatherMap;
 
 public class OpenWeatherMapAPI
 {
-    public static void GetUSWeather(HttpClient client, IConfiguration config)
+    public static async Task GetUSWeather(HttpClient client, IConfiguration config)
     {
         //get API key
         string apiKey = config["ApiSettings:MyApiKey"];
@@ -28,12 +28,12 @@ public class OpenWeatherMapAPI
 
             var weatherAPI =
                 $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},us&appid={apiKey}&units=imperial";
-            var weatherData = client.GetAsync(weatherAPI).Result;
+            var weatherData = await client.GetAsync(weatherAPI);
             
             //proceed with weather data display if user input is valid
             if (weatherData.IsSuccessStatusCode)
             {
-                weather = weatherData.Content.ReadAsStringAsync().Result;
+                weather = await weatherData.Content.ReadAsStringAsync();
                 validInput = true;
             }
             //prompt user to try again if input is invalid
