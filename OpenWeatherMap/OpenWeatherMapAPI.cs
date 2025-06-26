@@ -19,35 +19,59 @@ public class OpenWeatherMapAPI
         //receive and validate user input
         do
         {
-            Console.WriteLine("Please enter the city name: ");
-            city = Console.ReadLine() ?? "";
-
-            Console.WriteLine("Please enter the two digit state code: ");
-            state = Console.ReadLine() ?? "";
-
-            var weatherAPI =
-                $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},us&appid={apiKey}&units=imperial";
-            var weatherData = await client.GetAsync(weatherAPI);
-            
-            //proceed with weather data display if user input is valid
-            if (weatherData.IsSuccessStatusCode)
+            try
             {
-                weather = await weatherData.Content.ReadAsStringAsync();
-                validInput = true;
+                Console.WriteLine("Please enter the city name: ");
+                city = Console.ReadLine() ?? "";
+
+                Console.WriteLine("Please enter the two digit state code: ");
+                state = Console.ReadLine() ?? "";
+
+                var weatherAPI =
+                    $"https://api.openweathermap.org/data/2.5/weather?q={city},{state},us&appid={apiKey}&units=imperial";
+                var weatherData = await client.GetAsync(weatherAPI);
+
+                //proceed with weather data display if user input is valid
+                if (weatherData.IsSuccessStatusCode)
+                {
+                    weather = await weatherData.Content.ReadAsStringAsync();
+                    validInput = true;
+                }
+                //prompt user to try again if input is invalid
+                else if (weatherData.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine("----------------------------------------------------------");
+                    Console.WriteLine("City with this state code is not valid.  Please try again.");
+                    Console.WriteLine("----------------------------------------------------------\n");
+                    validInput = false;
+                }
+                //prompt user to try again if something unexpected occurs while processing user input
+                else
+                {
+                    Console.WriteLine("-----------------------------------------------------");
+                    Console.WriteLine("Request did not process correctly.  Please try again.");
+                    Console.WriteLine("-----------------------------------------------------\n");
+                    validInput = false;
+                }
             }
-            //prompt user to try again if input is invalid
-            else if (weatherData.StatusCode == HttpStatusCode.NotFound)
-            {
-                Console.WriteLine("----------------------------------------------------------");
-                Console.WriteLine("City with this state code is not valid.  Please try again.");
-                Console.WriteLine("----------------------------------------------------------\n");
-                validInput = false;
-            }
-            //prompt user to try again if something unexpected occurs while processing user input
-            else
+            catch (HttpRequestException ex)
             {
                 Console.WriteLine("-----------------------------------------------------");
-                Console.WriteLine("Request did not process correctly.  Please try again.");
+                Console.WriteLine($"Network error: {ex.Message}. Please try again.");
+                Console.WriteLine("-----------------------------------------------------\n");
+                validInput = false;
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("-----------------------------------------------------");
+                Console.WriteLine("Request timed out. Please try again.");
+                Console.WriteLine("-----------------------------------------------------\n");
+                validInput = false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("-----------------------------------------------------");
+                Console.WriteLine($"Unexpected error: {ex.Message}. Please try again.");
                 Console.WriteLine("-----------------------------------------------------\n");
                 validInput = false;
             }
@@ -67,39 +91,65 @@ public class OpenWeatherMapAPI
         var weather = "";
         bool validInput = false;
 
-        do
-        {
-            Console.WriteLine("Please enter the city name: ");
-            city = Console.ReadLine() ?? "";
-
-            Console.WriteLine("Please enter the two digit country code: ");
-            Console.WriteLine("(Country codes may be found at https://countrycode.org/.  Use the two digit ISO code.)");
-            country = Console.ReadLine() ?? "";
-
-            var weatherAPI =
-                $"https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid={apiKey}&units=imperial";
-            var weatherData = await client.GetAsync(weatherAPI);
-
-            if (weatherData.IsSuccessStatusCode)
+        
+            do
             {
-                weather = await weatherData.Content.ReadAsStringAsync();
-                validInput = true;
-            }
-            else if (weatherData.StatusCode == HttpStatusCode.NotFound)
-            {
-                Console.WriteLine("------------------------------------------------------------");
-                Console.WriteLine("City with this country code is not valid.  Please try again.");
-                Console.WriteLine("------------------------------------------------------------\n");
-                validInput = false;
-            }
-            else
-            {
-                Console.WriteLine("-----------------------------------------------------");
-                Console.WriteLine("Request did not process correctly.  Please try again.");
-                Console.WriteLine("-----------------------------------------------------\n");
-                validInput = false;
-            }
-        } while (!validInput);
+                try
+                {
+                    Console.WriteLine("Please enter the city name: ");
+                    city = Console.ReadLine() ?? "";
+
+                    Console.WriteLine("Please enter the two digit country code: ");
+                    Console.WriteLine(
+                        "(Country codes may be found at https://countrycode.org/.  Use the two digit ISO code.)");
+                    country = Console.ReadLine() ?? "";
+
+                    var weatherAPI =
+                        $"https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid={apiKey}&units=imperial";
+                    var weatherData = await client.GetAsync(weatherAPI);
+
+                    if (weatherData.IsSuccessStatusCode)
+                    {
+                        weather = await weatherData.Content.ReadAsStringAsync();
+                        validInput = true;
+                    }
+                    else if (weatherData.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        Console.WriteLine("------------------------------------------------------------");
+                        Console.WriteLine("City with this country code is not valid.  Please try again.");
+                        Console.WriteLine("------------------------------------------------------------\n");
+                        validInput = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("-----------------------------------------------------");
+                        Console.WriteLine("Request did not process correctly.  Please try again.");
+                        Console.WriteLine("-----------------------------------------------------\n");
+                        validInput = false;
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    Console.WriteLine("-----------------------------------------------------");
+                    Console.WriteLine($"Network error: {ex.Message}. Please try again.");
+                    Console.WriteLine("-----------------------------------------------------\n");
+                    validInput = false;
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("-----------------------------------------------------");
+                    Console.WriteLine("Request timed out. Please try again.");
+                    Console.WriteLine("-----------------------------------------------------\n");
+                    validInput = false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("-----------------------------------------------------");
+                    Console.WriteLine($"Unexpected error: {ex.Message}. Please try again.");
+                    Console.WriteLine("-----------------------------------------------------\n");
+                    validInput = false;
+                }
+            } while (!validInput);
         
         DisplayWeatherData(weather, city, country);
     }
@@ -119,34 +169,58 @@ public class OpenWeatherMapAPI
 
         do
         {
-            Console.WriteLine("Please enter the latitude: ");
-            Console.WriteLine("(Latitude must be a value between -90 and 90)");
-            latitude = Console.ReadLine() ?? "";
-
-            Console.WriteLine("Please enter the longitude: ");
-            Console.WriteLine("(Longitude must be a value between -180 and 180)");
-            longitude = Console.ReadLine() ?? "";
-
-            var weatherAPI =
-                $"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={apiKey}&units=imperial";
-            var weatherData = await client.GetAsync(weatherAPI);
-
-            if (weatherData.IsSuccessStatusCode)
+            try
             {
-                weather = await weatherData.Content.ReadAsStringAsync();
-                validInput = true;
+                Console.WriteLine("Please enter the latitude: ");
+                Console.WriteLine("(Latitude must be a value between -90 and 90)");
+                latitude = Console.ReadLine() ?? "";
+
+                Console.WriteLine("Please enter the longitude: ");
+                Console.WriteLine("(Longitude must be a value between -180 and 180)");
+                longitude = Console.ReadLine() ?? "";
+
+                var weatherAPI =
+                    $"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={apiKey}&units=imperial";
+                var weatherData = await client.GetAsync(weatherAPI);
+
+                if (weatherData.IsSuccessStatusCode)
+                {
+                    weather = await weatherData.Content.ReadAsStringAsync();
+                    validInput = true;
+                }
+                else if (weatherData.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine("---------------------------------------------------");
+                    Console.WriteLine("These coordinates are not valid.  Please try again.");
+                    Console.WriteLine("---------------------------------------------------\n");
+                    validInput = false;
+                }
+                else
+                {
+                    Console.WriteLine("-----------------------------------------------------");
+                    Console.WriteLine("Request did not process correctly.  Please try again.");
+                    Console.WriteLine("-----------------------------------------------------\n");
+                    validInput = false;
+                }
             }
-            else if (weatherData.StatusCode == HttpStatusCode.NotFound)
-            {
-                Console.WriteLine("---------------------------------------------------");
-                Console.WriteLine("These coordinates are not valid.  Please try again.");
-                Console.WriteLine("---------------------------------------------------\n");
-                validInput = false;
-            }
-            else
+            catch (HttpRequestException ex)
             {
                 Console.WriteLine("-----------------------------------------------------");
-                Console.WriteLine("Request did not process correctly.  Please try again.");
+                Console.WriteLine($"Network error: {ex.Message}. Please try again.");
+                Console.WriteLine("-----------------------------------------------------\n");
+                validInput = false;
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("-----------------------------------------------------");
+                Console.WriteLine("Request timed out. Please try again.");
+                Console.WriteLine("-----------------------------------------------------\n");
+                validInput = false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("-----------------------------------------------------");
+                Console.WriteLine($"Unexpected error: {ex.Message}. Please try again.");
                 Console.WriteLine("-----------------------------------------------------\n");
                 validInput = false;
             }
